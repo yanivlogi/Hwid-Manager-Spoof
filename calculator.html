@@ -24,7 +24,14 @@
         }
         h1 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
+            text-shadow: 2px 2px 2px rgb(0, 0, 0);
+        }
+        h3 {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            text-align: center;
+            color: #c5f8fe;
+            text-shadow: 2px 1px 2px #00bfff;
         }
         form {
             width: 50%;
@@ -36,7 +43,9 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: #1e1e1e;
+            color: #ffffff;
+            font-family: "Heebo", Sans-serif;
+            text-shadow: 1px 1px 1px #000000;
         }
         input[type="number"],
         input[type="text"],
@@ -94,21 +103,27 @@
 <body>
     
     <form id="jewelryForm">
-        <h1>מחשבון קראט</h1>
-        <h3 style="text-align: center;">נוצר על ידי : יניב לוגי</h3>
+        <h1>מחשבון לתמכור תכשיטים</h1>
+        <h3 style="text-align: center;">נוצר על ידי - יניב לוגי &copy;</h3>
         <tr>
         <label for="goldWeight">משקל הזהב בגרמים:</label>
-        <input type="number" id="goldWeight" step="0.01" required>
+        <input type="number" min="0" id="goldWeight" step="0.01" required>
         <label for="mainGemstoneCarat">גודלי היהלומים הראשיים בקראטים (נפרדים בפסיקים):</label>
         <input type="text" id="mainGemstoneCarat" required>
         <label for="caratForAllSideGemstones">משקל כללי של כל היהלומים הצדדיים בקראטים:</label>
-        <input type="number" id="caratForAllSideGemstones" step="0.01" required>
+        <input type="number" min="0" id="caratForAllSideGemstones" step="0.01" required>
         <label for="sideGemstonesAmount">כמות יהלומים הצדדיים:</label>
-        <input type="number" id="sideGemstonesAmount" step="1" required>
+        <input type="number" min="0" id="sideGemstonesAmount" step="1" required>
         <button type="submit">חשב מחיר</button>
         <label for="increasePrice">העלה את המחיר הכולל ב-26%:</label>
         <input type="checkbox" id="increasePrice">
        
+        <div>
+           <ul>
+            <li>על שרשראות מעל 50 ס'מ יש להוסיף ידנית 250 שח</li>
+           
+           </ul>
+        </div>
 
         <div class="priceContainer">
         <div id="result"></div>
@@ -123,7 +138,7 @@
         let totalPriceInILS;
         
         function calculateJewelryPrice(goldWeight, mainGemstoneCarats, caratForAllSideGemstones, sideGemstonesAmount, increasePrice) {
-            // קביעת מחיר זהב לגרם
+            //  קביעת מחיר זהב לגרם בדולר
             const goldPricePerGram = 137;
 
             const Price_of_setting_S_stones = 2;
