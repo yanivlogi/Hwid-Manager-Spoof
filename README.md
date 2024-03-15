@@ -1,6 +1,6 @@
-# JewelCraft - Professional Jewelry Price Calculator
+# JewelCalculator - Professional Jewelry Price Calculator
 
-JewelCraft is an advanced jewelry price calculator designed to provide accurate estimates for the cost of crafting exquisite jewelry pieces.
+JewelCalculator is an advanced jewelry price calculator designed to provide accurate estimates for the cost of crafting exquisite jewelry pieces.
 
 ## Features
 
