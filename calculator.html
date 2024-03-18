@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +10,9 @@
             background-image: url("https://img.freepik.com/free-photo/abstract-blue-background-with-many-small-details-generative-ai_169016-30150.jpg?t=st=1709224867~exp=1709228467~hmac=6aee92bb334b3a6a5787eef198f87441ed306e742bbb0d4c1d4eea1d65cb9d43&w=2000");
             background-size: cover;
             margin: 0;
-            
             direction: rtl;
         }
         #container {
-            
             max-width: 600px;
             margin: 20px auto;
             background-color: #fff;
@@ -36,7 +34,7 @@
         form {
             width: 50%;
             margin: 0 auto;
-            padding: 200px;
+            padding: 20px;
             font-weight: bold;
             background-color: #628b9d60;
         }
@@ -61,17 +59,8 @@
             width: auto;
             display: flex;
             position: relative;
-            
             margin-right: 5px; /* Adjust spacing between checkbox and label */
         }
-        button {
-            width: calc(100% - 12px);
-            padding: 8px;
-            border: 1px solid #1c9cf2;
-            border-radius: 3px;
-            margin-bottom: 10px;
-        }
-     
         button {
             background-color: #4caf50;
             color: #fff;
@@ -88,24 +77,42 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 3px;
-           
         }
         .priceContainer{
             background-color: #fff;
             padding: 20px;
             min-height: 80px;
         }
-       
-   
-    
+        #tablePrice {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#tablePrice th, #tablePrice td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#tablePrice th {
+    background-color: #f2f2f2;
+}
+
+#tablePrice tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#tablePrice tbody tr:hover {
+    background-color: #ddd;
+}
+
     </style>
 </head>
 <body>
-    
     <form id="jewelryForm">
         <h1>מחשבון לתמכור תכשיטים</h1>
         <h3 style="text-align: center;">נוצר על ידי - יניב לוגי &copy;</h3>
-        <tr>
         <label for="goldWeight">משקל הזהב בגרמים:</label>
         <input type="number" min="0" id="goldWeight" step="0.01" required>
         <label for="mainGemstoneCarat">גודלי היהלומים הראשיים בקראטים (נפרדים בפסיקים):</label>
@@ -115,47 +122,117 @@
         <label for="sideGemstonesAmount">כמות יהלומים הצדדיים:</label>
         <input type="number" min="0" id="sideGemstonesAmount" step="1" required>
         <button type="submit">חשב מחיר</button>
-        <label for="increasePrice">הנחה של (מחיר + 22% ) - 26%</label>
+        <label for="increasePrice">הוסף 22% למחיר</label>
         <input type="checkbox" id="increasePrice">
-       
+        <label for="decreasePrice">הורד 26% מהמחיר</label>
+        <input type="checkbox" id="decreasePrice">
         <div>
            <ul>
             <li>על שרשראות מעל 50 ס'מ יש להוסיף ידנית 250 שח</li>
-           
            </ul>
         </div>
-
         <div class="priceContainer">
-        <div id="result"></div>
-    <br>
-    <div id="resultWithSetting"></div>
+            <div id="result"></div>
+            <br>
+            <div id="resultWithSetting"></div>
+            <div id="tablePrice"></div>
+        </div>
     </form>
-    
-
-    </div>
- 
     <script>
         let totalPriceInILS;
-        
-        function calculateJewelryPrice(goldWeight, mainGemstoneCarats, caratForAllSideGemstones, sideGemstonesAmount, increasePrice) {
+    
+        function calculateJewelryPrice(goldWeight, mainGemstoneCarats, caratForAllSideGemstones, sideGemstonesAmount, increasePrice, decreasePrice) {
             //  קביעת מחיר זהב לגרם בדולר
             const goldPricePerGram = 137;
-
+    
             const Price_of_setting_S_stones = 2;
             const Price_of_setting_M_stones = 5;
             const Price_of_setting_L_stones = 10;
             let counter_of_setting_S_stones = 0;
             let counter_of_setting_M_stones = 0;
             let counter_of_setting_L_stones = 0;
-
+    
             // Split the input string of main stone carat weights into an array
+
+            
+
             const mainGemstoneCaratArray = mainGemstoneCarats.split(',').map(parseFloat);
 
+            if(mainGemstoneCaratArray[0] == 0)
+            {
+                createTable();
+            }
+    
             // Calculate the total price of main stones
             const mainGemstonePrice = mainGemstoneCaratArray.reduce((total, carat) => {
                 total += gemsCaratCalculator(carat) * carat;
                 return total;
             }, 0);
+            
+
+            function createTable() {
+    // Check if a table with the id "tablePrice" already exists and remove it if it does
+    var existingTable = document.getElementById("tablePrice");
+    if (existingTable) {
+        existingTable.parentNode.removeChild(existingTable);
+    }
+
+    // Create table element
+    var table = document.createElement("table");
+
+    // Set id attribute to the table
+    table.setAttribute("id", "tablePrice");
+
+    // Create table header
+    var header = table.createTHead();
+    var headerRow = header.insertRow(0);
+    var headers = ["קראט", "מחיר"];
+
+    // Insert header cells
+    headers.forEach(function (headerText) {
+        var th = document.createElement("th");
+        var text = document.createTextNode(headerText);
+        th.appendChild(text);
+        headerRow.appendChild(th);
+    });
+
+    // Create table body
+    var body = table.createTBody();
+    var products = [];
+
+    // Sample data for demonstration
+    var carat = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+    const goldWeight = parseFloat(document.getElementById('goldWeight').value);
+    const goldPricePerGram = 137;
+    const mainGemstoneCarat = parseFloat(document.getElementById('mainGemstoneCarat').value);
+    const caratForAllSideGemstones = parseFloat(document.getElementById('caratForAllSideGemstones').value);
+    const sideGemstonesAmount = parseInt(document.getElementById('sideGemstonesAmount').value);
+
+    for (let i = 0; i < carat.length; i++) {
+        var mainGemstonePrice = gemsCaratCalculator(carat[i]) * carat[i];
+        var sideStonePrice = (caratForAllSideGemstones / sideGemstonesAmount) * (gemsCaratCalculator(carat[i]) * sideGemstonesAmount);
+        var totalPrice = (mainGemstonePrice + (goldWeight * goldPricePerGram) + sideStonePrice + 10) * 3.65;
+        products.push({ carat: carat[i], price: totalPrice.toFixed(2) });
+    }
+
+    // Insert rows and cells for each product
+    products.forEach(function (product) {
+        var row = body.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+
+        cell1.textContent = product.carat;
+        cell2.textContent = product.price + "₪";
+    });
+
+    // Append the table to the document body or any desired element
+    document.querySelector('.priceContainer').appendChild(table);
+}
+
+
+
+
+
 
             function gemsCaratCalculator(carat) {
                 if (carat >= 0.001 && carat <= 0.14) {
@@ -188,43 +265,48 @@
                     return 0;
                 }
             };
-
+          
+            
+           
             // Calculate the price of side stones
             const calculateSingleStoneSide = caratForAllSideGemstones / sideGemstonesAmount;
             const calculateAllStoneSidePrice = calculateSingleStoneSide * gemsCaratCalculator(calculateSingleStoneSide) * sideGemstonesAmount;
-            
+    
             // Calculate the total price of setting stones
-            const calculateSettingStone = (Price_of_setting_S_stones * sideGemstonesAmount) + 
-                                           (Price_of_setting_M_stones * counter_of_setting_M_stones) +
-                                           (Price_of_setting_L_stones * counter_of_setting_L_stones);
+            const calculateSettingStone = (Price_of_setting_S_stones * sideGemstonesAmount) +
+                (Price_of_setting_M_stones * counter_of_setting_M_stones) +
+                (Price_of_setting_L_stones * counter_of_setting_L_stones);
     
             // Calculate total price
             const goldPrice = goldWeight * goldPricePerGram;
             let totalPrice = mainGemstonePrice + calculateAllStoneSidePrice + goldPrice;
             let totalPriceWithSetting = totalPrice + calculateSettingStone;
-            console.log("totalPriceWithSetting : "+totalPriceWithSetting)
-            console.log("totalPrice : "+totalPrice)
-            
-
-            if (increasePrice) {
+    
+            if (increasePrice && !decreasePrice) {
+                totalPrice *= 1.22; // Increase the total price by 22%
+                totalPriceWithSetting *= 1.22;
+            } else if (!increasePrice && decreasePrice) {
+                totalPrice *= 0.74; // Decrease the total price by 26%
+                totalPriceWithSetting *= 0.74;
+            } else if (increasePrice && decreasePrice) {
+                // If both are checked, add 22% and then subtract 26%
                 totalPrice *= 1.22;
-                totalPriceWithSetting*= 1.22;
-                totalPrice =totalPrice* 0.74;
-                totalPriceWithSetting=totalPriceWithSetting*0.74;
-                 // Increase the total price by 26%
+                totalPriceWithSetting *= 1.22;
+                totalPrice *= 0.74;
+                totalPriceWithSetting *= 0.74;
             }
-
+    
             totalPriceInILS = totalPrice * 3.65;
             const totalPriceWithSettingInILS = totalPriceWithSetting * 3.65;
-           
-            console.log("counter_of_setting_S_stones : "+sideGemstonesAmount)
-            console.log("counter_of_setting_M_stones : "+counter_of_setting_M_stones)
-            console.log("counter_of_setting_L_stones : "+counter_of_setting_L_stones)
     
-
+            console.log("counter_of_setting_S_stones : " + sideGemstonesAmount)
+            console.log("counter_of_setting_M_stones : " + counter_of_setting_M_stones)
+            console.log("counter_of_setting_L_stones : " + counter_of_setting_L_stones)
+    
+    
             return { totalPrice, totalPriceWithSetting };
         }
-
+    
         document.getElementById('jewelryForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const goldWeight = parseFloat(document.getElementById('goldWeight').value);
@@ -232,12 +314,13 @@
             const caratForAllSideGemstones = parseFloat(document.getElementById('caratForAllSideGemstones').value);
             const sideGemstonesAmount = parseInt(document.getElementById('sideGemstonesAmount').value);
             const increasePrice = document.getElementById('increasePrice').checked;
-
-            const { totalPrice, totalPriceWithSetting } = calculateJewelryPrice(goldWeight, mainGemstoneCarat, caratForAllSideGemstones, sideGemstonesAmount, increasePrice);
+            const decreasePrice = document.getElementById('decreasePrice').checked;
+    
+            const { totalPrice, totalPriceWithSetting } = calculateJewelryPrice(goldWeight, mainGemstoneCarat, caratForAllSideGemstones, sideGemstonesAmount, increasePrice, decreasePrice);
             document.getElementById('result').textContent = "מחיר התכשיט ללא שיבוץ בדולר הוא: " + totalPrice.toFixed(2) + "$" + " ובשקלים המחיר ללא שיבוץ הוא : " + (totalPrice * 3.65).toFixed(2) + "₪";
-            document.getElementById('resultWithSetting').textContent = "מחיר התכשיט כולל שיבוץ בדולר הוא: " + totalPriceWithSetting.toFixed(2) + "$"+ " ובשקלים המחיר כולל שיבוץ הוא : " + (totalPriceWithSetting * 3.65).toFixed(2) + "₪";
+            document.getElementById('resultWithSetting').textContent = "מחיר התכשיט כולל שיבוץ בדולר הוא: " + totalPriceWithSetting.toFixed(2) + "$" + " ובשקלים המחיר כולל שיבוץ הוא : " + (totalPriceWithSetting * 3.65).toFixed(2) + "₪";
         });
-
     </script>
+    
 </body>
 </html>
