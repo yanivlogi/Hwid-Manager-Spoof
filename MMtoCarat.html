@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Shape Converter</title>
+</head>
+<body>
+    <h1>Stone Shape Converter</h1>
+    <form id="converterForm">
+        <label for="shape">Select Stone Shape:</label>
+        <select id="shape" name="shape">
+            <option value="Round">Round</option>
+            <option value="Princess">Princess</option>
+            <option value="Cushion">Cushion</option>
+            <option value="Oval">Oval</option>
+            <option value="Radiant">Radiant</option>
+            <option value="Emerald">Emerald</option>
+            <option value="Pear">Pear</option>
+            <option value="Heart">Heart</option>
+            <option value="Marquise">Marquise</option>
+            <option value="Triangle">Triangle</option>
+            <option value="Trillion">Trillion</option>
+            <option value="Baguette">Baguette</option>
+            <option value="TaperedBaguette">Tapered Baguette</option>
+        </select><br><br>
+        <label for="unit">Select Unit:</label>
+        <select id="unit" name="unit">
+            <option value="mm">Millimeter (mm)</option>
+            <option value="carat">Carat (ct)</option>
+        </select><br><br>
+        <label for="value">Enter Value:</label>
+        <input type="number" id="value" name="value" step="0.01"><br><br>
+        <button type="submit">Convert</button>
+    </form>
+    <div id="result"></div>
+
+    <!-- Importing JavaScript files -->
+    <script src="converter.js"></script>
+</body>
+</html>
