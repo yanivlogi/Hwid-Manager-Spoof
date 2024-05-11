@@ -30,12 +30,117 @@
             <option value="carat">Carat (ct)</option>
         </select><br><br>
         <label for="value">Enter Value:</label>
-        <input type="number" id="value" name="value" step="0.01"><br><br>
+        <input type="text" id="value" name="value" placeholder="e.g. 2,2 or 2*2"><br>
+        <span id="valueMessage" style="color: grey;"></span><br>
+        <span id="errorMsg" style="color: red; display: none;"></span><br>
         <button type="submit">Convert</button>
     </form>
     <div id="result"></div>
 
     <!-- Importing JavaScript files -->
-    <script src="converter.js"></script>
+    <script src="converter.js" type="module"></script>
+    <script>
+        // Function to update the value message based on the selected shape and unit
+        function updateValueMessage() {
+            // Get the selected shape value
+            var shape = document.getElementById('shape').value;
+            // Get the selected unit value
+            var unit = document.getElementById('unit').value;
+            // Get the value input field
+            var valueInput = document.getElementById('value');
+            // Remove required attribute initially
+            valueInput.removeAttribute('required');
+
+            // Set the required attribute based on the selected shape and unit
+            if (unit == 'mm') {
+                switch (shape) {
+                    case 'Round':
+                    case 'Princess':
+                    case 'Heart':
+                    case 'Triangle':
+                    case 'Trillion':
+                        document.getElementById('valueMessage').innerText = 'Enter 1 value';
+                        break;
+                    case 'Cushion':
+                    case 'Baguette':
+                    case 'Marquise':
+                    case 'Emerald':
+                    case 'Oval':
+                    case 'Radiant':
+                    case 'Pear':
+                        document.getElementById('valueMessage').innerText = 'Enter 2 values separated by ","';
+                        break;
+                    case 'TaperedBaguette':
+                        document.getElementById('valueMessage').innerText = 'Enter 3 values separated by ","';
+                        break
+                    default:
+                        valueInput.removeAttribute('required');
+                        document.getElementById('valueMessage').innerText = '';
+                        break;
+                }
+            }
+        }
+
+        // Add event listener to the shape select element
+        document.getElementById('shape').addEventListener('change', function() {
+            updateValueMessage();
+        });
+
+        // Add event listener to the unit select element
+        document.getElementById('unit').addEventListener('change', function() {
+            updateValueMessage();
+        });
+
+        // Add event listener to the value input field
+        document.getElementById('value').addEventListener('input', function() {
+            // Get the selected shape value
+            var shape = document.getElementById('shape').value;
+            // Get the value input field
+            var valueInput = document.getElementById('value');
+            // Check if the input is required and not filled
+            var values = valueInput.value.split(',');
+            var requiredValues = 1;
+            switch (shape) {
+                case 'Cushion':
+                case 'Baguette':
+                case 'Marquise':
+                case 'Emerald':
+                case 'Oval':
+                case 'Radiant':
+                case 'Pear':
+                    requiredValues = 2;
+                    break;
+                case 'TaperedBaguette':
+                    requiredValues = 3;
+                    break;
+            }
+            if (values.length > requiredValues) {
+                // Trim extra values
+                valueInput.value = values.slice(0, requiredValues).join(',');
+            }
+            updateValueMessage();
+        });
+
+        // Add event listener for form submission
+        document.getElementById('converterForm').addEventListener('submit', function(event) {
+            // Get the selected shape value
+            var shape = document.getElementById('shape').value;
+            // Get the value input field
+            var valueInput = document.getElementById('value');
+            // Check if the input is required and not filled
+            if (valueInput.hasAttribute('required') && valueInput.value.trim() === '') {
+                // Display error message
+                document.getElementById('errorMsg').style.display = 'block';
+                // Prevent form submission
+                event.preventDefault();
+            } else {
+                // Hide error message if input is filled correctly
+                document.getElementById('errorMsg').style.display = 'none';
+            }
+        });
+
+        // Call updateValueMessage initially
+        updateValueMessage();
+    </script>
 </body>
 </html>
