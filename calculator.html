@@ -55,7 +55,7 @@
         input[type="number"],
         input[type="text"],
         input[type="checkbox"],
-        button {
+        #submitButton {
             width: calc(100% - 12px);
             padding: 8px;
             border: 1px solid #ccc;
@@ -71,7 +71,7 @@
             /* Adjust spacing between checkbox and label */
         }
 
-        button {
+        #submitButton {
             background-color: #4caf50;
             color: #fff;
             cursor: pointer;
@@ -80,7 +80,7 @@
             transition: background-color 0.3s ease;
         }
 
-        button:hover {
+        #submitButton:hover {
             background-color: #45a049;
         }
 
@@ -128,6 +128,12 @@
     <form id="jewelryForm">
         <h1>מחשבון לתמכור תכשיטים</h1>
         <h3 style="text-align: center;">נוצר על ידי - יניב לוגי &copy;</h3>
+        <label for="typeOfStone">בחר סוג יהלום</label>
+        <select id="typeOfStone" name="typeOfStone" required>
+            <option value="">בחר</option>
+            <option value="false">מעבדה</option>
+            <option value="true">טבעי</option>
+        </select>
         <label for="goldWeight">משקל הזהב בגרמים:</label>
         <input type="number" min="0" id="goldWeight" step="0.01" required>
         <label for="mainGemstoneCarat">גודלי היהלומים הראשיים בקראטים (נפרדים בפסיקים):</label>
@@ -137,10 +143,11 @@
         <label for="sideGemstonesAmount">כמות יהלומים הצדדיים:</label>
         <input type="number" min="0" id="sideGemstonesAmount" step="1" required>
         <div>
-            <label for="addCustom">הוסף עוד אבנים</label>
-            <input type="button">
+            <label for="addStoneButton">הוסף עוד אבנים</label>
+            <button id="addStoneButton" type="button">הוסף אבן</button>
         </div>
-        <button type="submit">חשב מחיר</button>
+        <div id="additionalStonesContainer"></div>
+        <button type="submit" id="submitButton">חשב מחיר</button>
         <label for="increasePrice">הוסף 22% למחיר</label>
         <input type="checkbox" id="increasePrice">
         <label for="decreasePrice">הורד 26% מהמחיר</label>
@@ -160,276 +167,124 @@
     <script>
         let totalPriceInILS;
 
-        function calculateJewelryPrice(goldWeight, mainGemstoneCarats, caratForAllSideGemstones, sideGemstonesAmount, increasePrice, decreasePrice) {
-            //  קביעת מחיר זהב לגרם בדולר
-            const goldPricePerGram = 137;
-
-            const Price_of_setting_S_stones = 2;
-            const Price_of_setting_M_stones = 5;
-            const Price_of_setting_L_stones = 10;
-            let counter_of_setting_S_stones = 0;
-            let counter_of_setting_M_stones = 0;
-            let counter_of_setting_L_stones = 0;
-
-            // Split the input string of main stone carat weights into an array
-
-
-
-            const mainGemstoneCaratArray = mainGemstoneCarats.split(',').map(parseFloat);
-
-            if (mainGemstoneCaratArray[0] == 0) {
-                createTable();
+        function NaturalDiamondCaratCalculator(carat) {
+            if (carat >= 0.0001 && carat <= 0.06) {
+                return { price: 1000 * carat, setting: 2 };
+            } else if (carat >= 0.061 && carat <= 0.10) {
+                return { price: 1200 * carat, setting: 2 };
+            } else if (carat >= 0.101 && carat <= 0.15) {
+                return { price: 1500 * carat, setting: 2 };
+            } else if (carat >= 0.151 && carat <= 0.20) {
+                return { price: 1800 * carat, setting: 5 };
+            } else if (carat >= 0.201 && carat <= 0.30) {
+                return { price: 2200 * carat, setting: 10 };
+            } else if (carat >= 0.301 && carat <= 0.50) {
+                return { price: 2900 * carat, setting: 10 };
+            } else {
+                return { price: 0, setting: 0 };
             }
-
-            // Calculate the total price of main stones
-            const mainGemstonePrice = mainGemstoneCaratArray.reduce((total, carat) => {
-                total += gemsCaratCalculator(carat) * carat;
-                return total;
-            }, 0);
-
-
-
-            function calculateTableRowPrice(carat, increasePrice, decreasePrice) {
-                const goldWeight = parseFloat(document.getElementById('goldWeight').value);
-                const priceForMainSetting = 10;
-                const priceForSideSetting = 2;
-                const goldPricePerGram = 137;
-                const mainGemstoneCarat = carat;
-                const caratForAllSideGemstones = parseFloat(document.getElementById('caratForAllSideGemstones').value);
-                const sideGemstonesAmount = parseFloat(document.getElementById('sideGemstonesAmount').value);
-
-                const mainGemstonePrice = CvdDiamondCaratCalculator(carat) * carat;
-                const caratForOneSideStone = caratForAllSideGemstones / sideGemstonesAmount;
-                const priceForCaratSideStone = (caratForOneSideStone * CvdDiamondCaratCalculator(caratForOneSideStone)) * sideGemstonesAmount
-                const goldPrice = goldWeight * goldPricePerGram;
-                let totalPrice = (mainGemstonePrice + goldPrice + priceForCaratSideStone + priceForMainSetting + (priceForSideSetting * sideGemstonesAmount)) * 3.65;
-
-                if (increasePrice && !decreasePrice) {
-                    totalPrice *= 1.22; // Increase the total price by 22%
-                } else if (!increasePrice && decreasePrice) {
-                    totalPrice *= 0.74; // Decrease the total price by 26%
-                } else if (increasePrice && decreasePrice) {
-                    totalPrice *= 1.22; // Increase the total price by 22% initially
-                    totalPrice *= 0.74; // Then decrease the total price by 26%
-                }
-
-                return totalPrice;
-            }
-
-            function createTable() {
-                // Check if a table with the id "tablePrice" already exists and remove it if it does
-                var existingTable = document.getElementById("tablePrice");
-                if (existingTable) {
-                    existingTable.parentNode.removeChild(existingTable);
-                }
-
-                // Create table element
-                var table = document.createElement("table");
-
-                // Set id attribute to the table
-                table.setAttribute("id", "tablePrice");
-
-                // Create table header
-                var header = table.createTHead();
-                var headerRow = header.insertRow(0);
-                var headers = ["קראט", "מחיר ללא שיבוץ"];
-
-                // Insert header cells
-                headers.forEach(function (headerText) {
-                    var th = document.createElement("th");
-                    var text = document.createTextNode(headerText);
-                    th.appendChild(text);
-                    headerRow.appendChild(th);
-                });
-
-                // Create table body
-                var body = table.createTBody();
-                var products = [];
-
-                // Sample data for demonstration
-                const carat = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
-                const goldWeight = parseFloat(document.getElementById('goldWeight').value);
-                const goldPricePerGram = 137;
-                const mainGemstoneCarat = parseFloat(document.getElementById('mainGemstoneCarat').value);
-                const caratForAllSideGemstones = parseFloat(document.getElementById('caratForAllSideGemstones').value);
-                const sideGemstonesAmount = parseFloat(document.getElementById('sideGemstonesAmount').value);
-
-                for (let i = 0; i < carat.length; i++) {
-                    var row = body.insertRow();
-                    var cell1 = row.insertCell(0);
-                    var cell2 = row.insertCell(1);
-
-                    cell1.textContent = carat[i];
-                    cell2.textContent = calculateTableRowPrice(carat[i], increasePrice, decreasePrice).toFixed(0);
-                }
-
-                // Insert rows and cells for each product
-                products.forEach(function (product) {
-                    var row = body.insertRow();
-                    var cell1 = row.insertCell(0);
-                    var cell2 = row.insertCell(1);
-
-                    cell1.textContent = product.carat;
-                    cell2.textContent = product.price.toFixed(2) + "₪";
-                });
-
-                // Append the table to the document body or any desired element
-                document.querySelector('.priceContainer').appendChild(table);
-            }
-
-
-            //החזרת ערך של יהלום טבעי לפי הקראט שלו
-            function NaturalDiamondCaratCalculator(carat) {
-                if (carat >= 0.01 && carat <= 0.06) {
-                    return 1000;
-                } else if (carat >= 0.061 && carat <= 0.10) {
-                    return 1200;
-                } else if (carat >= 0.101 && carat <= 0.15) {
-                    return 1500;
-                } else if (carat >= 0.151 && carat <= 0.20) {
-                    return 1800;
-                } else if (carat >= 0.201 && carat <= 0.30) {
-                    return 2200;
-                } else if (carat >= 0.301 && carat <= 0.50) {
-                    return 2900;
-                }
-                else {
-                    return 0;
-                }
-            };
-
-            //החזרת ערך אבן חן מעבדה לפי סוג האבן והקראט שלה
-            function CvdGemsCaratCalculator(gem, carat) {
-                if (gem == 'black diamonds') {
-                    return CvdDiamondCaratCalculator(carat)
-                }
-                else if (gem == 'ruby') {
-                    return carat * 100
-                }
-                else if (gem == 'emerald') {
-                    return carat * 100
-                }
-                else if (gem == 'sapphire') {
-                    return carat * 100
-                }
-                else if (gem == 'topaz') {
-                    return carat * 50
-                }
-                else if (gem == 'garnet') {
-                    return carat * 50
-                }
-                else if (gem == 'citrine') {
-                    return carat * 50
-                }
-                else if (gem == 'agate') {
-                    return carat * 50
-                }
-                else if (gem == 'amethyst') {
-                    return carat * 50
-                }
-                else if (gem == 'aquamarine') {
-                    return carat * 50
-                }
-                else if (gem == 'onyx') {
-                    return carat * 50
-                }
-                else if (gem == 'jasper') {
-                    return carat * 50
-                }
-
-            };
-
-            //החזרת ערך של יהלום מעבדה לפי הקראט שלו
-            function CvdDiamondCaratCalculator(carat) {
-                if (carat >= 0.001 && carat <= 0.14) {
-                    return 500;
-                } else if (carat >= 0.15 && carat <= 0.60) {
-                    counter_of_setting_L_stones++;
-                    return 800;
-                } else if (carat >= 0.61 && carat <= 1.00) {
-                    counter_of_setting_L_stones++;
-                    return 1000;
-                } else if (carat >= 1.01 && carat <= 1.50) {
-                    counter_of_setting_L_stones++;
-                    return 1200;
-                } else if (carat >= 1.51 && carat <= 2.00) {
-                    counter_of_setting_L_stones++;
-                    return 1400;
-                } else if (carat >= 2.01 && carat <= 3.00) {
-                    counter_of_setting_L_stones++;
-                    return 1800;
-                } else if (carat >= 3.01 && carat <= 3.50) {
-                    counter_of_setting_L_stones++;
-                    return 2200;
-                } else if (carat >= 3.51 && carat <= 4.00) {
-                    counter_of_setting_L_stones++;
-                    return 2600;
-                } else if (carat >= 4.01 && carat <= 5.00) {
-                    counter_of_setting_L_stones++;
-                    return 2800;
-                } else {
-                    return 0;
-                }
-            };
-
-
-
-            // Calculate the price of side stones
-            const calculateSingleStoneSide = caratForAllSideGemstones / sideGemstonesAmount;
-            const calculateAllStoneSidePrice = calculateSingleStoneSide * CvdDiamondCaratCalculator(calculateSingleStoneSide) * sideGemstonesAmount;
-
-            // Calculate the total price of setting stones
-            const calculateSettingStone = (Price_of_setting_S_stones * sideGemstonesAmount) +
-                (Price_of_setting_M_stones * counter_of_setting_M_stones) +
-                (Price_of_setting_L_stones * counter_of_setting_L_stones);
-
-            // Calculate total price
-            const goldPrice = goldWeight * goldPricePerGram;
-            let totalPrice = mainGemstonePrice + calculateAllStoneSidePrice + goldPrice;
-            let totalPriceWithSetting = totalPrice + calculateSettingStone;
-
-            if (increasePrice && !decreasePrice) {
-                totalPrice *= 1.22; // Increase the total price by 22%
-                totalPriceWithSetting *= 1.22;
-            } else if (!increasePrice && decreasePrice) {
-                totalPrice *= 0.74; // Decrease the total price by 26%
-                totalPriceWithSetting *= 0.74;
-            } else if (increasePrice && decreasePrice) {
-                // If both are checked, add 22% and then subtract 26%
-                totalPrice *= 1.22;
-                totalPriceWithSetting *= 1.22;
-                totalPrice *= 0.74;
-                totalPriceWithSetting *= 0.74;
-            }
-
-            totalPriceInILS = totalPrice * 3.65;
-            const totalPriceWithSettingInILS = totalPriceWithSetting * 3.65;
-
-            console.log("counter_of_setting_S_stones : " + sideGemstonesAmount)
-            console.log("counter_of_setting_M_stones : " + counter_of_setting_M_stones)
-            console.log("counter_of_setting_L_stones : " + counter_of_setting_L_stones)
-
-
-            return { totalPrice, totalPriceWithSetting };
         }
 
-        document.getElementById('jewelryForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+        function CvdDiamondCaratCalculator(carat) {
+            if (carat >= 0.001 && carat <= 0.14) {
+                return { price: 500 * carat, setting: 2 };
+            } else if (carat >= 0.15 && carat <= 0.60) {
+                return { price: 800 * carat, setting: 5 };
+            } else if (carat >= 0.61 && carat <= 1.00) {
+                return { price: 1000 * carat, setting: 10 };
+            } else if (carat >= 1.01 && carat <= 1.50) {
+                return { price: 1200 * carat, setting: 10 };
+            } else if (carat >= 1.51 && carat <= 2.00) {
+                return { price: 1400 * carat, setting: 10 };
+            } else if (carat >= 2.01 && carat <= 3.00) {
+                return { price: 1800 * carat, setting: 10 };
+            } else if (carat >= 3.01 && carat <= 3.50) {
+                return { price: 2200 * carat, setting: 10 };
+            } else if (carat >= 3.51 && carat <= 4.00) {
+                return { price: 2600 * carat, setting: 10 };
+            } else if (carat >= 4.01 && carat <= 5.00) {
+                return { price: 2800 * carat, setting: 10 };
+            } else {
+                return { price: 0, setting: 0 };
+            }
+        }
+
+        function calculateJewelryPrice(goldWeight, mainGemstoneCarats, caratForAllSideGemstones, sideGemstonesAmount, increasePrice, decreasePrice, isNatural) {
+            const goldPricePerGram = 137;
+            const dolarValue = 3.65;
+            const mainGemstoneCaratArray = mainGemstoneCarats.split(',').map(parseFloat);
+
+            let totalMainGemstonePrice = 0;
+            let totalSettingPrice = 0;
+            mainGemstoneCaratArray.forEach(carat => {
+                const { price, setting } = isNatural ? NaturalDiamondCaratCalculator(carat) : CvdDiamondCaratCalculator(carat);
+                totalMainGemstonePrice += price;
+                totalSettingPrice += setting;
+            });
+
+            const avgSideStoneCarat = caratForAllSideGemstones / sideGemstonesAmount;
+            let { price: priceForAllSideGemstones, setting: sideGemstonesSetting } = isNatural ? NaturalDiamondCaratCalculator(avgSideStoneCarat) : CvdDiamondCaratCalculator(avgSideStoneCarat);
+
+            totalMainGemstonePrice += priceForAllSideGemstones * sideGemstonesAmount;
+            totalSettingPrice += sideGemstonesSetting * sideGemstonesAmount;
+            
+            let totalPrice = (goldWeight * goldPricePerGram) + totalMainGemstonePrice + totalSettingPrice;
+            totalPrice = totalPrice * dolarValue;
+            totalSettingPrice = totalSettingPrice * dolarValue;
+
+            if (increasePrice) {
+                totalPrice *= 1.22;
+            }
+            if (decreasePrice) {
+                totalPrice *= 0.74;
+            }
+
+            return {
+                totalPrice: totalPrice.toFixed(2),
+                totalSettingPrice: totalSettingPrice.toFixed(2)
+            };
+        }
+
+        function generateTableForMultipleStones(stonesData, isNatural) {
+            let tableHTML = '<table id="tablePrice"><thead><tr><th>סוג האבן</th><th>גודל האבן בקראט</th><th>מחיר האבן בשח</th></tr></thead><tbody>';
+            stonesData.forEach(stone => {
+                const { price, setting } = isNatural ? NaturalDiamondCaratCalculator(stone.carat) : CvdDiamondCaratCalculator(stone.carat);
+                tableHTML += `<tr><td>${isNatural ? 'טבעי' : 'מעבדה'}</td><td>${stone.carat}</td><td>${(price*dolarValue).toFixed(2)}</td></tr>`;
+            });
+            tableHTML += '</tbody></table>';
+            return tableHTML;
+        }
+
+        document.getElementById('addStoneButton').addEventListener('click', () => {
+            const additionalStonesContainer = document.getElementById('additionalStonesContainer');
+            const stoneInput = document.createElement('input');
+            stoneInput.type = 'number';
+            stoneInput.placeholder = 'גודל האבן בקראט';
+            stoneInput.step = '0.01';
+            stoneInput.required = true;
+            additionalStonesContainer.appendChild(stoneInput);
+        });
+
+        document.getElementById('jewelryForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+
             const goldWeight = parseFloat(document.getElementById('goldWeight').value);
             const mainGemstoneCarat = document.getElementById('mainGemstoneCarat').value;
             const caratForAllSideGemstones = parseFloat(document.getElementById('caratForAllSideGemstones').value);
-            const sideGemstonesAmount = parseInt(document.getElementById('sideGemstonesAmount').value);
+            const sideGemstonesAmount = parseFloat(document.getElementById('sideGemstonesAmount').value);
             const increasePrice = document.getElementById('increasePrice').checked;
             const decreasePrice = document.getElementById('decreasePrice').checked;
+            const isNatural = document.getElementById('typeOfStone').value === 'true';
 
-            const { totalPrice, totalPriceWithSetting } = calculateJewelryPrice(goldWeight, mainGemstoneCarat, caratForAllSideGemstones, sideGemstonesAmount, increasePrice, decreasePrice);
-            document.getElementById('result').textContent = "מחיר התכשיט ללא שיבוץ בדולר הוא: " + totalPrice.toFixed(2) + "$" + " ובשקלים המחיר ללא שיבוץ הוא : " + (totalPrice * 3.65).toFixed(2) + "₪";
-            document.getElementById('resultWithSetting').textContent = "מחיר התכשיט כולל שיבוץ בדולר הוא: " + totalPriceWithSetting.toFixed(2) + "$" + " ובשקלים המחיר כולל שיבוץ הוא : " + (totalPriceWithSetting * 3.65).toFixed(2) + "₪";
-            createTable();
+            const { totalPrice, totalSettingPrice } = calculateJewelryPrice(goldWeight, mainGemstoneCarat, caratForAllSideGemstones, sideGemstonesAmount, increasePrice, decreasePrice, isNatural);
+            document.getElementById('result').innerText = `המחיר הסופי בשקלים הוא: ${totalPrice}`;
+            document.getElementById('resultWithSetting').innerText = `מחיר הגדרת האבנים בשקלים הוא: ${totalSettingPrice}`;
 
+            const stonesData = mainGemstoneCarat.split(',').map(carat => ({ carat: parseFloat(carat) }));
+            const tableHTML = generateTableForMultipleStones(stonesData, isNatural);
+            document.getElementById('tablePrice').innerHTML = tableHTML;
         });
     </script>
-
 </body>
 
 </html>
